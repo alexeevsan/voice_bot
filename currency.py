@@ -6,14 +6,15 @@ currency_list = {
     'евро': 'EUR'
 }
 
+declensions = {
+    'рубль': ('рубль', 'рубля', 'рублей', 'рублю'),
+    'доллар': ('доллар', 'доллара', 'долларов', 'доллару'),
+    'евро': ('евро', 'евро', 'евро', 'евро')
+}
+
 
 def plural(currency, qty):
     qty = int(qty)
-    declensions = {
-        'рубль': ('рубль', 'рубля', 'рублей'),
-        'доллар': ('доллар', 'доллара', 'долларов'),
-        'евро': ('евро', 'евро', 'евро')
-    }
 
     cases = [2, 0, 1, 1, 1, 2]
     declension = declensions[currency]
@@ -57,23 +58,24 @@ def get_exchange(cur1, cur2, amount=1):
 
 
 def exchange_rate(msg):
+    msg = msg.replace('-', ' ')
     msg = msg.replace(' к ', ' ')
     try:
         text, cur1, cur2 = msg.split(' ')
 
-        req_cur1 = get_currency_name(cur1)
-        req_cur2 = get_currency_name(cur2)
+        cur1 = get_currency_name(cur1)
+        cur2 = get_currency_name(cur2)
 
-        if req_cur1 not in currency_list or req_cur2 not in currency_list:
+        if cur1 not in currency_list or cur2 not in currency_list:
             return 'Валюта не поддерживается'
     except:
         return 'Нет такой команды'
 
-    response = get_exchange(req_cur1, req_cur2)
+    response = get_exchange(cur1, cur2)
 
     curs = response.json()['result']['convertedAmount']
 
-    return f'Курс {cur1} к {cur2} составляет {round(float(curs), 2)}'
+    return f'Курс {declensions[cur1][1]} к {declensions[cur2][3]} составляет {round(float(curs), 2)}'
 
 
 def converter(msg):

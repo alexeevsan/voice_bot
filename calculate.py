@@ -5,7 +5,7 @@ def calculate(msg):
     try:
         a, oper, b = msg.replace(',', '.').split(' ')
     except:
-        return msg
+        return 'Нет такой команды'
 
     a = float(a) if '.' in a else int(a)
     b = float(b) if '.' in b else int(b)
@@ -17,4 +17,8 @@ def calculate(msg):
         '/': operator.truediv
     }
 
-    return str(ops[oper](a, b))
+    result = ops[oper](a, b)
+    if type(result) is float:
+        result = round(float(result), 2)
+
+    return str(result)
